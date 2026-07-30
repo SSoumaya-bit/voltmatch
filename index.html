@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoltMatch — Dimensionnement et recommandation de batteries intelligent</title>
+  <meta name="description"
+    content="VoltMatch calcule votre besoin énergétique et compare objectivement les batteries du marché (seconde vie Renault EZ1, CATL, BYD, Pylontech, Tesla, Dyness…) sur 9 critères de scoring.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════ -->
+  <header class="site-header">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff"
+          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        </svg>
+      </div>
+      <span class="logo-text">VoltMatch</span>
+    </a>
+
+    <nav class="site-nav">
+      <a href="index.html" class="active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        <span data-i18n="nav_home">Accueil</span>
+      </a>
+      <a href="recommandation.html">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        </svg>
+        <span data-i18n="nav_reco">Recommandation</span>
+      </a>
+      <a href="database.html">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <ellipse cx="12" cy="5" rx="9" ry="3" />
+          <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+        </svg>
+        <span data-i18n="nav_db">Base de données</span>
+      </a>
+      <button id="langToggleBtn" class="lang-btn" onclick="toggleLanguage()" title="Switch language">EN</button>
+      <a href="panier.html" class="cart-nav-btn" title="Mon panier">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <path d="M16 10a4 4 0 01-8 0" />
+        </svg>
+        <span>Panier</span>
+        <span class="cart-badge-count" style="display:none">0</span>
+      </a>
+    </nav>
+
+    <div class="nav-actions">
+      <div id="authNavArea" style="display:contents">
+        <!-- Injected by auth.js: shows sign-in btn or user pill -->
+        <button onclick="document.getElementById('loginModal').classList.remove('hidden')" class="btn btn-ghost btn-sm"
+          data-i18n="nav_login">Connexion</button>
+      </div>
+      <a href="recommandation.html" class="btn btn-primary btn-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        </svg>
+        <span data-i18n="nav_start">Démarrer</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════ -->
+  <section class="hero">
+    <!-- Circuit SVG background pattern -->
+    <svg class="hero-bg-pattern" viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <marker id="dot" viewBox="0 0 4 4" refX="2" refY="2" markerWidth="4" markerHeight="4">
+          <circle cx="2" cy="2" r="1.5" fill="#E8622C" />
+        </marker>
+      </defs>
+      <!-- Horizontal rails -->
+      <line x1="0" y1="120" x2="1200" y2="120" stroke="#E8622C" stroke-width="1" marker-mid="url(#dot)" />
+      <line x1="0" y1="350" x2="1200" y2="350" stroke="#E8622C" stroke-width="0.6" />
+      <line x1="0" y1="580" x2="1200" y2="580" stroke="#E8622C" stroke-width="0.6" />
+      <!-- Vertical rails -->
+      <line x1="200" y1="0" x2="200" y2="700" stroke="#E8622C" stroke-width="0.6" />
+      <line x1="600" y1="0" x2="600" y2="700" stroke="#E8622C" stroke-width="0.6" />
+      <line x1="950" y1="0" x2="950" y2="700" stroke="#E8622C" stroke-width="0.6" />
+      <!-- Circuit nodes -->
+      <circle cx="200" cy="120" r="5" fill="none" stroke="#E8622C" stroke-width="1.5" />
+      <circle cx="600" cy="120" r="5" fill="none" stroke="#E8622C" stroke-width="1.5" />
+      <circle cx="950" cy="350" r="5" fill="none" stroke="#E8622C" stroke-width="1.5" />
+      <circle cx="200" cy="580" r="5" fill="none" stroke="#E8622C" stroke-width="1.5" />
+      <circle cx="600" cy="580" r="5" fill="none" stroke="#E8622C" stroke-width="1.5" />
+      <!-- Small rectangles (components) -->
+      <rect x="350" y="108" width="40" height="24" rx="3" fill="none" stroke="#E8622C" stroke-width="1" />
+      <rect x="770" y="338" width="40" height="24" rx="3" fill="none" stroke="#E8622C" stroke-width="1" />
+      <rect x="80" y="568" width="40" height="24" rx="3" fill="none" stroke="#E8622C" stroke-width="1" />
+      <!-- Diagonal connectors -->
+      <line x1="200" y1="120" x2="600" y2="350" stroke="#E8622C" stroke-width="0.5" stroke-dasharray="4 6" />
+      <line x1="600" y1="120" x2="950" y2="580" stroke="#E8622C" stroke-width="0.5" stroke-dasharray="4 6" />
+      <!-- Battery symbol (right side) -->
+      <rect x="880" y="60" width="180" height="90" rx="8" fill="none" stroke="#E8622C" stroke-width="1.5" />
+      <rect x="888" y="68" width="40" height="74" rx="4" fill="#E8622C" fill-opacity="0.5" />
+      <rect x="934" y="68" width="40" height="74" rx="4" fill="#E8622C" fill-opacity="0.3" />
+      <rect x="980" y="68" width="40" height="74" rx="4" fill="#E8622C" fill-opacity="0.15" />
+      <rect x="1056" y="90" width="10" height="30" rx="2" fill="#E8622C" fill-opacity="0.4" />
+      <!-- Waveform -->
+      <polyline points="60,300 100,250 140,300 180,200 220,300 260,270 300,300" fill="none" stroke="#E8622C"
+        stroke-width="1.2" opacity="0.6" />
+    </svg>
+
+    <div class="hero-gradient"></div>
+
+    <div class="hero-content">
+      <div class="hero-left">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          <span data-i18n="hero_badge">Plateforme de dimensionnement intelligent</span>
+        </div>
+
+        <h1 class="hero-title" style="font-family: 'Outfit', sans-serif;">
+          <span data-i18n="hero_title_1">Trouvez la batterie</span><br>
+          <span class="accent" style="font-weight: 800;" data-i18n="hero_title_accent">exactement</span> <span
+            data-i18n="hero_title_2">adaptée à votre besoin</span>
+        </h1>
+
+        <p class="hero-subtitle" data-i18n="hero_subtitle">
+          VoltMatch calcule votre configuration optimale en quelques secondes, puis compare
+          <strong>objectivement</strong> les batteries seconde vie Renault EZ1 aux meilleures alternatives commerciales
+          du marché.
+        </p>
+
+        <div class="hero-actions">
+          <a href="recommandation.html" class="btn btn-primary btn-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+            <span data-i18n="hero_btn_start">Lancer une recommandation</span>
+          </a>
+          <a href="database.html" class="btn btn-outline btn-lg" data-i18n="hero_btn_db">
+            Voir la base de données
+          </a>
+        </div>
+
+        <div class="hero-trust">
+          <div class="hero-trust-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="#E8622C" stroke-width="2">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span><strong>11+</strong> <span data-i18n="hero_trust_models">modèles comparés</span></span>
+          </div>
+          <div class="hero-trust-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="#E8622C" stroke-width="2">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span data-i18n="hero_trust_branches">Filières : seconde vie & neuf</span>
+          </div>
+          <div class="hero-trust-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="#E8622C" stroke-width="2">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span><strong>8</strong> <span data-i18n="hero_trust_criteria">critères de scoring</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero visual: 3D-style battery illustration -->
+      <div class="hero-visual">
+        <svg viewBox="0 0 280 420" width="280" height="420" xmlns="http://www.w3.org/2000/svg"
+          style="filter: drop-shadow(0 40px 80px rgba(232,98,44,0.25))">
+          <!-- Battery body -->
+          <rect x="20" y="60" width="200" height="320" rx="18" fill="rgba(255,255,255,0.04)"
+            stroke="rgba(232,98,44,0.4)" stroke-width="2" />
+
+          <!-- Stacked Cells (Staggered light-up sequence) -->
+          <g class="battery-cell-group" style="animation-delay: 0.15s;">
+            <rect x="40" y="90" width="160" height="52" rx="8" fill="rgba(47,158,68,0.3)" stroke="rgba(47,158,68,0.5)"
+              stroke-width="1.5" />
+            <text x="120" y="122" text-anchor="middle" font-family="Space Grotesk" font-size="13" font-weight="700"
+              fill="rgba(255,255,255,0.8)">3.2V · 50Ah</text>
+          </g>
+          <g class="battery-cell-group" style="animation-delay: 0.30s;">
+            <rect x="40" y="154" width="160" height="52" rx="8" fill="rgba(47,158,68,0.25)" stroke="rgba(47,158,68,0.4)"
+              stroke-width="1.5" />
+            <text x="120" y="186" text-anchor="middle" font-family="Space Grotesk" font-size="13" font-weight="700"
+              fill="rgba(255,255,255,0.7)">3.2V · 50Ah</text>
+          </g>
+          <g class="battery-cell-group" style="animation-delay: 0.45s;">
+            <rect x="40" y="218" width="160" height="52" rx="8" fill="rgba(232,98,44,0.25)" stroke="rgba(232,98,44,0.4)"
+              stroke-width="1.5" />
+            <text x="120" y="250" text-anchor="middle" font-family="Space Grotesk" font-size="13" font-weight="700"
+              fill="rgba(255,255,255,0.6)">3.2V · 50Ah</text>
+          </g>
+          <g class="battery-cell-group" style="animation-delay: 0.60s;">
+            <rect x="40" y="282" width="160" height="52" rx="8" fill="rgba(232,98,44,0.15)"
+              stroke="rgba(232,98,44,0.25)" stroke-width="1.5" />
+            <text x="120" y="314" text-anchor="middle" font-family="Space Grotesk" font-size="13" font-weight="700"
+              fill="rgba(255,255,255,0.4)">3.2V · 50Ah</text>
+          </g>
+
+          <!-- Terminals -->
+          <rect x="80" y="30" width="80" height="32" rx="8" fill="rgba(232,98,44,0.6)" stroke="rgba(232,98,44,0.8)"
+            stroke-width="1.5" />
+          <text x="120" y="52" text-anchor="middle" font-family="Space Grotesk" font-size="11" font-weight="700"
+            fill="#fff">+ 48V</text>
+          <!-- Bottom terminal -->
+          <rect x="80" y="376" width="80" height="24" rx="6" fill="rgba(255,255,255,0.08)"
+            stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+          <text x="120" y="392" text-anchor="middle" font-family="Space Grotesk" font-size="10" font-weight="700"
+            fill="rgba(255,255,255,0.4)">- GND</text>
+
+          <!-- Vertical Gauge Bar (State of Health / Charge) -->
+          <defs>
+            <linearGradient id="gaugeGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#22c55e" />
+              <stop offset="100%" stop-color="#e8622c" />
+            </linearGradient>
+          </defs>
+          <!-- Gauge Background -->
+          <rect x="240" y="90" width="12" height="244" rx="6" fill="rgba(255,255,255,0.05)"
+            stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+          <!-- Gauge Fill (74%) -->
+          <rect class="hero-gauge-fill" x="240" y="153.44" width="12" height="180.56" rx="6" fill="url(#gaugeGrad)" />
+          <!-- Gauge Text -->
+          <text id="heroGaugeText" x="246" y="80" text-anchor="middle" font-family="Space Grotesk" font-size="12"
+            font-weight="700" fill="#22c55e">74%</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════
+     TRUST BAND — 3 chiffres clés
+══════════════════════════════════════════════════ -->
+  <section class="trust-band">
+    <div class="trust-band-inner">
+      <div class="trust-stat scroll-reveal">
+        <div class="trust-stat-number stat-counter" data-target="11" data-suffix="+">0+</div>
+        <div class="trust-stat-label" data-i18n="trust_stat1_label">Modèles de batteries comparés</div>
+      </div>
+      <div class="trust-stat scroll-reveal" style="transition-delay: 0.1s;">
+        <div class="trust-stat-number stat-counter" data-target="2" data-suffix="">0</div>
+        <div class="trust-stat-label" data-i18n="trust_stat2_label">Filières : seconde vie &amp; neuf</div>
+      </div>
+      <div class="trust-stat scroll-reveal" style="transition-delay: 0.2s;">
+        <div class="trust-stat-number stat-counter" data-target="8" data-suffix="">0</div>
+        <div class="trust-stat-label" data-i18n="trust_stat3_label">Critères de scoring objectifs</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════
+     HOW IT WORKS
+══════════════════════════════════════════════════ -->
+  <section class="section-dark">
+    <div class="section-inner">
+      <div class="section-tag" data-i18n="steps_tag">Fonctionnement</div>
+      <h2 class="section-title" data-i18n="steps_title">Trois étapes vers la solution idéale</h2>
+      <p class="section-subtitle" data-i18n="steps_subtitle">Un moteur de recommandation objectif, sans favoritisme pour
+        aucun fabricant.</p>
+
+      <div class="steps-grid">
+        <div class="step-card scroll-reveal">
+          <div class="step-number">01</div>
+          <div class="step-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+              <polyline points="10 9 9 9 8 9" />
+            </svg>
+          </div>
+          <h3 data-i18n="step1_title">Exprimez votre besoin</h3>
+          <p data-i18n="step1_desc">Puissance, autonomie, type d'usage, tension cible, budget — notre formulaire
+            intelligent s'adapte à votre contexte.</p>
+        </div>
+        <div class="step-card scroll-reveal" style="transition-delay: 0.12s;">
+          <div class="step-number">02</div>
+          <div class="step-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+          </div>
+          <h3 data-i18n="step2_title">Dimensionnement calculé</h3>
+          <p data-i18n="step2_desc">Le moteur calcule l'énergie réelle (avec marge de sécurité), recommande une chimie
+            LFP ou NMC, et détermine la configuration en cellules optimale.</p>
+        </div>
+        <div class="step-card scroll-reveal" style="transition-delay: 0.24s;">
+          <div class="step-number">03</div>
+          <div class="step-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+          </div>
+          <h3 data-i18n="step3_title">Comparaison objective</h3>
+          <p data-i18n="step3_desc">Les batteries compatibles sont scorées et classées selon 8 critères. Renault EZ1
+            n'est jamais favorisée artificiellement : elle remonte si son score le justifie.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════
+     CRITERIA SECTION
+══════════════════════════════════════════════════ -->
+  <section class="section-light">
+    <div class="section-inner">
+      <div class="section-tag" style="color:var(--accent)" data-i18n="criteria_tag">Scoring</div>
+      <h2 class="section-title" style="color:var(--bg-dark)" data-i18n="criteria_title">8 critères de classement
+        transparents</h2>
+      <p class="section-subtitle dark" data-i18n="criteria_subtitle">Chaque batterie est évaluée sur ces dimensions,
+        normalisées sur l'ensemble des candidats.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.5rem">
+        <!-- Critères -->
+        <div class="scroll-reveal"
+          style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:14px;padding:1.25rem">
+          <div style="font-size:1.375rem;margin-bottom:.5rem">⚡</div>
+          <div style="font-weight:700;color:#1a2535;font-size:.9375rem;margin-bottom:.25rem"
+            data-i18n="crit_energy_title">Énergie</div>
+          <div style="font-size:.8125rem;color:var(--text-muted)" data-i18n="crit_energy_desc">Adéquation avec le besoin
+            calculé — critère le plus pondéré</div>
+        </div>
+        <div class="scroll-reveal"
+          style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:14px;padding:1.25rem;transition-delay:0.08s;">
+          <div style="font-size:1.375rem;margin-bottom:.5rem">💰</div>
+          <div style="font-weight:700;color:#1a2535;font-size:.9375rem;margin-bottom:.25rem"
+            data-i18n="crit_price_title">Prix total</div>
+          <div style="font-size:.8125rem;color:var(--text-muted)" data-i18n="crit_price_desc">Coût de la solution
+            complète (unité × quantité)</div>
+        </div>
+        <div class="scroll-reveal"
+          style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:14px;padding:1.25rem;transition-delay:0.16s;">
+          <div style="font-size:1.375rem;margin-bottom:.5rem">📦</div>
+          <div style="font-weight:700;color:#1a2535;font-size:.9375rem;margin-bottom:.25rem"
+            data-i18n="crit_stock_title">Disponibilité</div>
+          <div style="font-size:.8125rem;color:var(--text-muted)" data-i18n="crit_stock_desc">Niveau de stock pour
+            couvrir le besoin immédiatement</div>
+        </div>
+        <div class="scroll-reveal"
+          style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:14px;padding:1.25rem;transition-delay:0.24s;">
+          <div style="font-size:1.375rem;margin-bottom:.5rem">🛡</div>
+          <div style="font-weight:700;color:#1a2535;font-size:.9375rem;margin-bottom:.25rem"
+            data-i18n="crit_warranty_title">Garantie</div>
+          <div style="font-size:.8125rem;color:var(--text-muted)" data-i18n="crit_warranty_desc">Durée de garantie
+            constructeur (en années)</div>
+        </div>
+        <div class="scroll-reveal"
+          style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:14px;padding:1.25rem;transition-delay:0.08s;">
+          <div style="font-size:1.375rem;margin-bottom:.5rem">🔄</div>
+          <div style="font-weight:700;color:#1a2535;font-size:.9375rem;margin-bottom:.25rem"
+            data-i18n="crit_cycles_title">Cycles</div>
+          <div style="font-size:.8125rem;color:var(--text-muted)" data-i18n="crit_cycles_desc">Nombre de cycles de
+            charge/décharge garanti</div>
+        </div>
+        <div class="scroll-reveal"
+          style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:14px;padding:1.25rem;transition-delay:0.16s;">
+          <div style="font-size:1.375rem;margin-bottom:.5rem">⚖️</div>
+          <div style="font-weight:700;color:#1a2535;font-size:.9375rem;margin-bottom:.25rem"
+            data-i18n="crit_density_title">Densité massique</div>
+          <div style="font-size:.8125rem;color:var(--text-muted)" data-i18n="crit_density_desc">Énergie par kg — crucial
+            pour les applications portables</div>
+        </div>
+        <div class="scroll-reveal"
+          style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:14px;padding:1.25rem;transition-delay:0.24s;">
+          <div style="font-size:1.375rem;margin-bottom:.5rem">🏋️</div>
+          <div style="font-weight:700;color:#1a2535;font-size:.9375rem;margin-bottom:.25rem"
+            data-i18n="crit_weight_title">Poids solution</div>
+          <div style="font-size:.8125rem;color:var(--text-muted)" data-i18n="crit_weight_desc">Poids total de la
+            solution (toutes unités confondues)</div>
+        </div>
+        <div class="scroll-reveal"
+          style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:14px;padding:1.25rem;transition-delay:0.32s;">
+          <div style="font-size:1.375rem;margin-bottom:.5rem">🧪</div>
+          <div style="font-weight:700;color:#1a2535;font-size:.9375rem;margin-bottom:.25rem"
+            data-i18n="crit_chem_title">Chimie</div>
+          <div style="font-size:.8125rem;color:var(--text-muted)" data-i18n="crit_chem_desc">Correspondance avec la
+            chimie LFP/NMC recommandée</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════
+     CTA BAND
+══════════════════════════════════════════════════ -->
+  <section class="section-dark" style="text-align:center">
+    <div class="section-inner" style="max-width:640px">
+      <div class="section-tag" data-i18n="cta_tag">Prêt à commencer ?</div>
+      <h2 class="section-title" data-i18n="cta_title">Obtenez votre recommandation personnalisée</h2>
+      <p class="section-subtitle" style="margin:0 auto 2rem;max-width:460px" data-i18n="cta_subtitle">En moins de 2
+        minutes, notre moteur calcule le dimensionnement exact et classe les meilleures batteries disponibles pour votre
+        usage.</p>
+      <a href="recommandation.html" class="btn btn-primary btn-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        </svg>
+        <span data-i18n="cta_btn">Démarrer le dimensionnement</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="margin-bottom:.75rem">
+          <div class="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff"
+              stroke-width="2.5">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+          </div>
+          <span class="logo-text">VoltMatch</span>
+        </a>
+        <p data-i18n="footer_desc">Plateforme de dimensionnement et de recommandation de batteries. Comparaison
+          objective multi-fournisseurs, seconde vie incluse.</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer_nav_title">Navigation</h4>
+        <ul>
+          <li><a href="index.html" data-i18n="nav_home">Accueil</a></li>
+          <li><a href="recommandation.html" data-i18n="nav_reco">Recommandation</a></li>
+          <li><a href="database.html" data-i18n="nav_db">Base de données</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer_info_title">Informations</h4>
+        <ul>
+          <li><a href="#" data-i18n="footer_link_methodology">Méthodologie de scoring</a></li>
+          <li><a href="#" data-i18n="footer_link_about">À propos</a></li>
+          <li><a href="#" data-i18n="footer_link_legal">Mentions légales</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-i18n="footer_copyright">© 2025 VoltMatch. Plateforme de recommandation énergétique.</span>
+      <span data-i18n="footer_disclaimer">Estimations indicatives — à valider par un ingénieur</span>
+    </div>
+  </footer>
+
+  <!-- Firebase Auth Modal -->
+  <div id="loginModal" class="hidden"
+    style="position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200"
+    onclick="if(event.target===this)this.classList.add('hidden')">
+    <div
+      style="background:#1a2535;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2.5rem;width:100%;max-width:400px;position:relative">
+      <button onclick="document.getElementById('loginModal').classList.add('hidden')"
+        style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;padding:.25rem"
+        aria-label="Fermer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <!-- Tab switcher -->
+      <div
+        style="display:flex;gap:4px;background:rgba(255,255,255,0.06);border-radius:10px;padding:4px;margin-bottom:1.75rem">
+        <button id="tabLogin" onclick="switchAuthTab('login')" class="auth-tab auth-tab-active">Connexion</button>
+        <button id="tabSignup" onclick="switchAuthTab('signup')" class="auth-tab">Créer un compte</button>
+      </div>
+      <div style="margin-bottom:1rem">
+        <label
+          style="font-size:.8125rem;font-weight:600;color:rgba(255,255,255,0.7);display:block;margin-bottom:6px">Email</label>
+        <input id="authEmail" type="email" placeholder="vous@exemple.com" autocomplete="email"
+          style="width:100%;padding:10px 14px;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;background:rgba(255,255,255,0.05);color:#fff;font-size:.875rem;outline:none;box-sizing:border-box">
+      </div>
+      <div style="margin-bottom:1.5rem">
+        <label
+          style="font-size:.8125rem;font-weight:600;color:rgba(255,255,255,0.7);display:block;margin-bottom:6px">Mot de
+          passe</label>
+        <input id="authPassword" type="password" placeholder="Min. 6 caractères" autocomplete="current-password"
+          style="width:100%;padding:10px 14px;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;background:rgba(255,255,255,0.05);color:#fff;font-size:.875rem;outline:none;box-sizing:border-box">
+      </div>
+      <div id="authError"
+        style="display:none;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:10px 14px;font-size:.8125rem;color:#F87171;margin-bottom:1rem">
+      </div>
+      <button id="authSubmitBtn" onclick="vmAuthSubmit('login')" class="btn btn-primary"
+        style="width:100%;justify-content:center;padding:12px">Se connecter</button>
+      <p style="text-align:center;font-size:.8125rem;color:rgba(255,255,255,0.4);margin-top:1.25rem">
+        Pas de compte ? <a href="#" onclick="event.preventDefault();switchAuthTab('signup')"
+          style="color:var(--accent)">Créer un compte</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="js/translations.js"></script>
+  <script src="js/auth.js"></script>
+
+  <script>
+    // ══════════════════════════════════════════════════
+    //  ANIMATIONS CONTROLLER
+    // ══════════════════════════════════════════════════
+    document.addEventListener('DOMContentLoaded', function () {
+      // 1. Hero Battery Gauge & Score Animation
+      var gaugeFill = document.getElementById('heroGaugeFill');
+      var gaugeText = document.getElementById('heroGaugeText');
+
+      if (gaugeFill && gaugeText) {
+        var targetHeight = 179; // 74% of 242px max height
+        var startY = 332;
+        var targetY = 153;
+        var targetPercent = 74;
+        var duration = 1500; // 1.5 seconds
+        var startTime = null;
+
+        function animateGauge(now) {
+          if (!startTime) startTime = now;
+          var elapsed = now - startTime;
+          var progress = Math.min(elapsed / duration, 1);
+
+          // Smooth cubic-bezier style easing (easeOutCubic)
+          var ease = 1 - Math.pow(1 - progress, 3);
+
+          var currentHeight = targetHeight * ease;
+          var currentY = startY - (startY - targetY) * ease;
+          var currentPercent = Math.round(targetPercent * ease);
+
+          gaugeFill.setAttribute('height', currentHeight);
+          gaugeFill.setAttribute('y', currentY);
+          gaugeText.textContent = currentPercent + '%';
+
+          if (progress < 1) {
+            requestAnimationFrame(animateGauge);
+          } else {
+            // After initial load animation, add subtle looping live pulse
+            gaugeFill.classList.add('live-pulse');
+          }
+        }
+
+        // Small initial delay before launching fill animation
+        setTimeout(function () {
+          requestAnimationFrame(animateGauge);
+        }, 300);
+      }
+
+      // 2 & 4. Scroll-Triggered Animations & Stat Counters
+      var revealElements = document.querySelectorAll('.scroll-reveal');
+
+      if ('IntersectionObserver' in window) {
+        var observerOptions = {
+          root: null,
+          rootMargin: '0px 0px -40px 0px',
+          threshold: 0.1
+        };
+
+        var observer = new IntersectionObserver(function (entries, obs) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+
+              // Trigger counter animation if contained in revealed section
+              var counters = entry.target.querySelectorAll('.stat-counter');
+              if (entry.target.classList.contains('stat-counter')) {
+                animateCounter(entry.target);
+              }
+              counters.forEach(function (counter) {
+                animateCounter(counter);
+              });
+
+              // Trigger once, do not repeat on scroll-up
+              obs.unobserve(entry.target);
+            }
+          });
+        }, observerOptions);
+
+        revealElements.forEach(function (el) {
+          observer.observe(el);
+        });
+      } else {
+        // Fallback for browsers without IntersectionObserver
+        revealElements.forEach(function (el) {
+          el.classList.add('is-visible');
+          var counters = el.querySelectorAll('.stat-counter');
+          counters.forEach(animateCounter);
+        });
+      }
+
+      function animateCounter(el) {
+        if (el.dataset.animated) return;
+        el.dataset.animated = 'true';
+
+        var target = parseInt(el.dataset.target, 10) || 0;
+        var suffix = el.dataset.suffix || '';
+        var duration = 1000; // 1s
+        var startTime = null;
+
+        function updateCounter(now) {
+          if (!startTime) startTime = now;
+          var elapsed = now - startTime;
+          var progress = Math.min(elapsed / duration, 1);
+          var ease = 1 - Math.pow(1 - progress, 3);
+          var current = Math.round(target * ease);
+
+          el.textContent = current + suffix;
+
+          if (progress < 1) {
+            requestAnimationFrame(updateCounter);
+          }
+        }
+
+        requestAnimationFrame(updateCounter);
+      }
+    });
+  </script>
+
+  <script src="js/translations.js"></script>
+  <script src="js/currency.js"></script>
+  <script src="js/batteries.js"></script>
+  <script src="js/cart.js"></script>
+
+
+</body>
+
+</html>

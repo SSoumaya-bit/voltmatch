@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoltMatch — Base de données de batteries</title>
+  <meta name="description" content="Consultez l'intégralité de la base de données de batteries VoltMatch : Renault EZ1 seconde vie, CATL, BYD, LG Energy Solution, Pylontech, Tesla Powerwall, Dyness, EcoFlow et plus.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="db-page">
+
+<!-- ══════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════ -->
+<header class="site-header">
+  <a href="index.html" class="logo">
+    <div class="logo-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    </div>
+    <span class="logo-text">VoltMatch</span>
+  </a>
+  <nav class="site-nav">
+    <a href="index.html">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+      <span data-i18n="nav_home">Accueil</span>
+    </a>
+    <a href="recommandation.html">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span data-i18n="nav_reco">Recommandation</span>
+    </a>
+    <a href="database.html" class="active">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      <span data-i18n="nav_db">Base de données</span>
+    </a>
+    <button id="langToggleBtn" class="lang-btn" onclick="toggleLanguage()" title="Switch language">EN</button>
+    <a href="panier.html" class="cart-nav-btn" title="Mon panier">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span>Panier</span>
+      <span class="cart-badge-count" style="display:none">0</span>
+    </a>
+  </nav>
+  <div id="authNavArea" class="nav-actions" style="margin-right:8px">
+    <button onclick="document.getElementById('loginModal').classList.remove('hidden')" class="btn btn-ghost btn-sm">Connexion</button>
+  </div>
+  <a href="recommandation.html" class="btn btn-primary btn-sm">
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    <span data-i18n="hero_btn_start">Lancer une recommandation</span>
+  </a>
+</header>
+
+<!-- ══════════════════════════════════════════════════
+     PAGE HEADER
+══════════════════════════════════════════════════ -->
+<div class="db-header-band">
+  <div class="db-header-inner">
+    <div>
+      <div style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem" data-i18n="db_header_tag">Catalogue</div>
+      <h1 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(1.75rem,4vw,2.25rem);font-weight:800;letter-spacing:-.03em;margin-bottom:.5rem" data-i18n="db_header_title">Base de données de batteries</h1>
+      <p style="color:rgba(255,255,255,0.55);font-size:1rem;max-width:500px" id="dbSubtitle" data-i18n="db_header_subtitle">26 modèles référencés de 8 fabricants. Données constructeur vérifiées ou estimées depuis les fiches techniques publiques.</p>
+    </div>
+    <a href="recommandation.html" class="btn btn-primary" style="white-space:nowrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span data-i18n="hero_btn_start">Obtenir une recommandation</span>
+    </a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     FILTERS
+══════════════════════════════════════════════════ -->
+<div style="background:var(--bg-light)">
+  <div class="db-filters">
+    <span style="font-size:.8125rem;font-weight:600;color:var(--text-muted);margin-right:.5rem" data-i18n="db_filter_label">Filtrer :</span>
+    <button class="filter-btn active" data-filter="all" data-i18n="db_filter_all">Tous</button>
+    <button class="filter-btn" data-filter="seconde vie" data-i18n="db_filter_secondlife">♻ Seconde vie</button>
+    <button class="filter-btn" data-filter="neuf" data-i18n="db_filter_new">✦ Neuf</button>
+    <button class="filter-btn" data-filter="LFP">LFP</button>
+    <button class="filter-btn" data-filter="NMC">NMC</button>
+    <div class="currency-selector" title="Taux indicatifs — juillet 2025" style="margin-left:0.25rem">
+      <button class="currency-btn" data-currency="EUR" onclick="setCurrency('EUR')">€ EUR</button>
+      <button class="currency-btn" data-currency="USD" onclick="setCurrency('USD')">$ USD</button>
+      <button class="currency-btn" data-currency="MAD" onclick="setCurrency('MAD')">DH MAD</button>
+    </div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:.5rem">
+      <input type="text" id="searchInput" placeholder="🔍  Rechercher fabricant ou modèle…" data-i18n-placeholder="db_search_placeholder"
+             style="padding:8px 14px;border:1.5px solid #E2E8F0;border-radius:8px;font-size:.8125rem;color:#1a2535;outline:none;background:#fff;width:260px">
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TABLE
+══════════════════════════════════════════════════ -->
+<div style="background:var(--bg-light)">
+  <div class="db-table-wrap">
+    <table class="db-table" id="batteryTable">
+      <thead>
+        <tr>
+          <th data-i18n="db_th_manufacturer">Fabricant</th>
+          <th data-i18n="db_th_model">Modèle</th>
+          <th data-i18n="db_th_type">Type</th>
+          <th data-i18n="db_th_chemistry">Chimie</th>
+          <th data-i18n="db_th_energy">Énergie</th>
+          <th data-i18n="db_th_voltage">Tension</th>
+          <th data-i18n="db_th_cycles">Cycles</th>
+          <th data-i18n="db_th_warranty">Garantie</th>
+          <th data-i18n="db_th_weight">Poids</th>
+          <th data-i18n="db_th_price">Prix indicatif</th>
+          <th data-i18n="db_th_stock">Stock</th>
+        </tr>
+      </thead>
+      <tbody id="batteryTableBody">
+        <!-- Populated by JS -->
+      </tbody>
+    </table>
+
+    <div id="emptyMsg" class="hidden" style="text-align:center;padding:3rem;color:var(--text-muted)">
+      <div style="font-size:2rem;margin-bottom:1rem">🔍</div>
+      <p style="font-weight:600;color:#1a2535;margin-bottom:.5rem" data-i18n="db_empty_title">Aucun résultat</p>
+      <p style="font-size:.875rem" data-i18n="db_empty_desc">Modifiez les filtres ou la recherche.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     INFO NOTE
+══════════════════════════════════════════════════ -->
+<div style="background:var(--bg-light);padding:0 2rem 3rem">
+  <div style="max-width:1200px;margin:0 auto">
+    <div style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:14px;padding:1.25rem 1.5rem;display:flex;gap:12px;align-items:flex-start">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8622C" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <p style="font-size:.8125rem;color:var(--text-muted);line-height:1.6">
+        <strong style="color:#1a2535" data-i18n="db_note_title">Note sur les données :</strong> <span data-i18n="db_note_desc">Les prix sont indicatifs (marché 2024-2025, hors installation et taxes locales). Les batteries Renault EZ1 sont des modules de seconde vie issus de véhicules électriques, reconditionnés et testés — capacité comptabilisée à 80% du nominal. Toutes les données sont à valider avant toute décision d'achat.</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="logo" style="margin-bottom:.75rem">
+        <div class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <span class="logo-text">VoltMatch</span>
+      </a>
+      <p data-i18n="footer_desc">Plateforme de dimensionnement et de recommandation de batteries. Comparaison objective multi-fournisseurs, seconde vie incluse.</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_nav_title">Navigation</h4>
+      <ul>
+        <li><a href="index.html" data-i18n="nav_home">Accueil</a></li>
+        <li><a href="recommandation.html" data-i18n="nav_reco">Recommandation</a></li>
+        <li><a href="database.html" data-i18n="nav_db">Base de données</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_info_title">Informations</h4>
+      <ul>
+        <li><a href="#" data-i18n="footer_link_methodology">Méthodologie de scoring</a></li>
+        <li><a href="#" data-i18n="footer_link_about">À propos</a></li>
+        <li><a href="#" data-i18n="footer_link_legal">Mentions légales</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span data-i18n="footer_copyright">© 2025 VoltMatch. Plateforme de recommandation énergétique.</span>
+    <span data-i18n="footer_disclaimer">Estimations indicatives — à valider par un ingénieur</span>
+  </div>
+</footer>
+
+<script src="js/translations.js"></script>
+<script src="js/currency.js"></script>
+<script src="js/batteries.js"></script>
+<script src="js/cart.js"></script>
+
+<script>
+// ── Render table ────────────────────────────────────
+let activeFilter = 'all';
+let searchQuery  = '';
+
+function renderTable() {
+  const tbody   = document.getElementById('batteryTableBody');
+  const emptyEl = document.getElementById('emptyMsg');
+  const lang    = (typeof getCurrentLang === 'function') ? getCurrentLang() : 'fr';
+
+  const filtered = BATTERIES.filter(b => {
+    const matchFilter = activeFilter === 'all' || b.type === activeFilter || b.chemistry === activeFilter;
+    const q = searchQuery.toLowerCase();
+    const matchSearch = !q || b.manufacturer.toLowerCase().includes(q) || b.model.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '';
+    emptyEl.classList.remove('hidden');
+    return;
+  }
+  emptyEl.classList.add('hidden');
+
+  tbody.innerHTML = filtered.map(b => {
+    const isEZ1  = b.manufacturer === 'Renault';
+    const rowStyle = isEZ1 ? 'border-left:4px solid var(--accent)' : '';
+
+    const labelSecondLife = lang === 'en' ? '♻ Second life' : '♻ Seconde vie';
+    const labelNew        = lang === 'en' ? '✦ New' : '✦ Neuf';
+    const labelYears      = lang === 'en' ? 'years' : 'ans';
+    const labelStockOut   = lang === 'en' ? 'Out of stock' : 'Rupture';
+    const labelUnits      = lang === 'en' ? 'units' : 'unités';
+    const labelStockIn    = lang === 'en' ? 'Available' : 'Disponible';
+
+    const typeBadge = b.type === 'seconde vie'
+      ? `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:.6875rem;font-weight:700;background:rgba(232,98,44,0.1);color:var(--accent);border:1px solid rgba(232,98,44,0.25)">${labelSecondLife}</span>`
+      : `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:.6875rem;font-weight:700;background:rgba(71,85,105,0.08);color:#475569;border:1px solid rgba(71,85,105,0.2)">${labelNew}</span>`;
+
+    const chemBadge = b.chemistry === 'LFP'
+      ? `<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:.6875rem;font-weight:700;background:rgba(47,158,68,0.1);color:#2F9E44">LFP</span>`
+      : `<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:.6875rem;font-weight:700;background:rgba(232,98,44,0.1);color:var(--accent)">NMC</span>`;
+
+    const prix = formatPrice(b.price, b.currency);
+
+    const stockHtml = b.stock === 0
+      ? `<span style="color:#ef4444;font-weight:600;font-size:.8125rem">${labelStockOut}</span>`
+      : b.stock < 20
+      ? `<span style="color:#f59e0b;font-weight:600;font-size:.8125rem">${b.stock} ${labelUnits}</span>`
+      : `<span style="color:var(--green-valid);font-weight:600;font-size:.8125rem">${labelStockIn}</span>`;
+
+    return `<tr style="${rowStyle}">
+      <td class="manufacturer-cell">${b.manufacturer}</td>
+      <td class="model-cell" title="${b.dataNote}">${b.model}</td>
+      <td>${typeBadge}</td>
+      <td>${chemBadge}</td>
+      <td><strong>${b.energyKwh} kWh</strong></td>
+      <td>${b.voltage} V</td>
+      <td>${b.cycles.toLocaleString(lang === 'en' ? 'en-US' : 'fr-FR')}</td>
+      <td>${b.warrantyYears} ${labelYears}</td>
+      <td>${b.weightKg} kg</td>
+      <td><strong>${prix}</strong></td>
+      <td>${stockHtml}</td>
+    </tr>`;
+  }).join('');
+
+  updateDbStats();
+}
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderTable();
+  });
+});
+
+// Search
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  renderTable();
+});
+
+// Initial render
+renderTable();
+
+// ── Dynamic subtitle stats ─────────────────────────
+function updateDbStats() {
+  const el = document.getElementById('dbSubtitle');
+  if (!el || typeof BATTERIES === 'undefined') return;
+  const mfrCount = new Set(BATTERIES.map(b => b.manufacturer)).size;
+  const lang = (typeof getCurrentLang === 'function') ? getCurrentLang() : 'fr';
+  el.textContent = lang === 'en'
+    ? `${BATTERIES.length} referenced models from ${mfrCount} manufacturers. Manufacturer data verified or estimated from public datasheets.`
+    : `${BATTERIES.length} modèles référencés de ${mfrCount} fabricants. Données constructeur vérifiées ou estimées depuis les fiches techniques publiques.`;
+}
+</script>
+
+<!-- Firebase Auth Modal -->
+<div id="loginModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200"
+     onclick="if(event.target===this)this.classList.add('hidden')">
+  <div style="background:#1a2535;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2.5rem;width:100%;max-width:400px;position:relative">
+    <button onclick="document.getElementById('loginModal').classList.add('hidden')"
+            style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;padding:.25rem" aria-label="Fermer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div style="display:flex;gap:4px;background:rgba(255,255,255,0.06);border-radius:10px;padding:4px;margin-bottom:1.75rem">
+      <button id="tabLogin"  onclick="switchAuthTab('login')"  class="auth-tab auth-tab-active">Connexion</button>
+      <button id="tabSignup" onclick="switchAuthTab('signup')" class="auth-tab">Créer un compte</button>
+    </div>
+    <div style="margin-bottom:1rem">
+      <label style="font-size:.8125rem;font-weight:600;color:rgba(255,255,255,0.7);display:block;margin-bottom:6px">Email</label>
+      <input id="authEmail" type="email" placeholder="vous@exemple.com" autocomplete="email"
+             style="width:100%;padding:10px 14px;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;background:rgba(255,255,255,0.05);color:#fff;font-size:.875rem;outline:none;box-sizing:border-box">
+    </div>
+    <div style="margin-bottom:1.5rem">
+      <label style="font-size:.8125rem;font-weight:600;color:rgba(255,255,255,0.7);display:block;margin-bottom:6px">Mot de passe</label>
+      <input id="authPassword" type="password" placeholder="Min. 6 caractères" autocomplete="current-password"
+             style="width:100%;padding:10px 14px;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;background:rgba(255,255,255,0.05);color:#fff;font-size:.875rem;outline:none;box-sizing:border-box">
+    </div>
+    <div id="authError" style="display:none;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:10px 14px;font-size:.8125rem;color:#F87171;margin-bottom:1rem"></div>
+    <button id="authSubmitBtn" onclick="vmAuthSubmit('login')" class="btn btn-primary" style="width:100%;justify-content:center;padding:12px">Se connecter</button>
+    <p style="text-align:center;font-size:.8125rem;color:rgba(255,255,255,0.4);margin-top:1.25rem">
+      Pas de compte ? <a href="#" onclick="event.preventDefault();switchAuthTab('signup')" style="color:var(--accent)">Créer un compte</a>
+    </p>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+
+</body>
+</html>

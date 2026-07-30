@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoltMatch — Recommandation de batterie</title>
+  <meta name="description" content="Calculez le dimensionnement optimal de votre batterie et obtenez une liste de batteries compatibles classées par score objectif.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="reco-page">
+
+<!-- ══════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════ -->
+<header class="site-header">
+  <a href="index.html" class="logo">
+    <div class="logo-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    </div>
+    <span class="logo-text">VoltMatch</span>
+  </a>
+  <nav class="site-nav">
+    <a href="index.html">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+      <span data-i18n="nav_home">Accueil</span>
+    </a>
+    <a href="recommandation.html" class="active">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span data-i18n="nav_reco">Recommandation</span>
+    </a>
+    <a href="database.html">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      <span data-i18n="nav_db">Base de données</span>
+    </a>
+    <button id="langToggleBtn" class="lang-btn" onclick="toggleLanguage()" title="Switch language">EN</button>
+    <a href="panier.html" class="cart-nav-btn" title="Mon panier">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span>Panier</span>
+      <span class="cart-badge-count" style="display:none">0</span>
+    </a>
+  </nav>
+  <div id="authNavArea" class="nav-actions">
+    <!-- Auth button injected by auth.js -->
+    <button onclick="document.getElementById('loginModal').classList.remove('hidden')" class="btn btn-ghost btn-sm">Connexion</button>
+  </div>
+  <a href="recommandation.html" class="btn btn-primary btn-sm">
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    <span data-i18n="nav_start">Démarrer</span>
+  </a>
+</header>
+
+<!-- ══════════════════════════════════════════════════
+     PAGE HEADER BAND
+══════════════════════════════════════════════════ -->
+<div class="reco-header-band">
+  <div class="reco-header-inner">
+    <div style="display:inline-block;font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem" data-i18n="reco_header_tag">Moteur de recommandation</div>
+    <h1 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(1.75rem,4vw,2.5rem);font-weight:800;letter-spacing:-.03em;margin-bottom:.5rem"><span data-i18n="reco_header_title_1">Dimensionnement &amp; </span><span style="color:var(--accent)" data-i18n="reco_header_title_accent">recommandation</span><span data-i18n="reco_header_title_2"> de batterie</span></h1>
+    <p style="color:rgba(255,255,255,0.55);font-size:1rem" data-i18n="reco_header_subtitle">Complétez les informations ci-dessous pour obtenir votre configuration optimale et un classement objectif des batteries disponibles.</p>
+
+    <!-- Stepper -->
+    <div class="stepper" style="margin-top:2rem">
+      <div class="step-dot-wrap">
+        <div id="dot1" class="step-dot active">1</div>
+        <div class="step-dot-label" data-i18n="step_dot1">Besoin énergétique</div>
+      </div>
+      <div class="step-connector" id="connector1"><div class="step-connector-fill"></div></div>
+      <div class="step-dot-wrap">
+        <div id="dot2" class="step-dot">2</div>
+        <div class="step-dot-label" data-i18n="step_dot2">Dimensionnement</div>
+      </div>
+      <div class="step-connector" id="connector2"><div class="step-connector-fill"></div></div>
+      <div class="step-dot-wrap">
+        <div id="dot3" class="step-dot">3</div>
+        <div class="step-dot-label" data-i18n="step_dot3">Batteries recommandées</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     STEP 1 — FORMULAIRE
+══════════════════════════════════════════════════ -->
+<div id="step1">
+  <div class="form-container">
+    <form id="besoinForm">
+      <div class="form-card">
+
+        <!-- Section 1 : Type d'application -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-section-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <div>
+              <div class="form-section-title" data-i18n="form_sec1_title">Type d'application</div>
+              <div class="form-section-subtitle" data-i18n="form_sec1_subtitle">Détermine la chimie recommandée et les priorités de scoring</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="typeApp" class="form-label"><span data-i18n="form_app_label">Application cible</span> <span>*</span></label>
+            <select id="typeApp" class="input-field" required>
+              <option value="" data-i18n="form_app_opt_select">Sélectionner un type d'application…</option>
+              <option value="backup" data-i18n="form_app_opt_backup">⚡ Alimentation de secours / UPS</option>
+              <option value="powerbank" data-i18n="form_app_opt_powerbank">🔋 Powerbank mobile / dépannage</option>
+              <option value="solaire-resi" data-i18n="form_app_opt_sol_resi">🏠 Stockage solaire résidentiel</option>
+              <option value="camping-car" data-i18n="form_app_opt_camping_car">🚐 Camping-car / Van aménagé</option>
+              <option value="solaire-indus" data-i18n="form_app_opt_sol_indus">🏭 Stockage solaire industriel</option>
+              <option value="peak-shaving" data-i18n="form_app_opt_peak">📈 Écrêtage de pics (peak shaving)</option>
+              <option value="autre" data-i18n="form_app_opt_autre">⋯ Autre</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Section 2 : Puissance & Autonomie -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-section-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div>
+              <div class="form-section-title" data-i18n="form_sec2_title">Puissance et autonomie</div>
+              <div class="form-section-subtitle" data-i18n="form_sec2_subtitle">Énergie = Puissance × Autonomie — avec marge de sécurité 25%</div>
+            </div>
+          </div>
+
+          <div class="form-grid form-grid-2">
+            <div class="form-group">
+              <label class="form-label"><span data-i18n="form_power_label">Puissance requise</span> <span>*</span></label>
+              <div class="input-wrapper">
+                <input type="number" id="puissanceVal" class="input-field with-addon" placeholder="ex : 3000" min="1" required>
+                <select id="puissanceUnit" class="input-field input-addon input-select-addon" style="width:70px">
+                  <option value="W">W</option>
+                  <option value="kW">kW</option>
+                </select>
+              </div>
+              <div class="form-hint" data-i18n="form_power_hint">Puissance de crête à soutenir</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><span data-i18n="form_auton_label">Autonomie souhaitée</span> <span>*</span></label>
+              <div class="input-wrapper">
+                <input type="number" id="autonomieVal" class="input-field with-addon" placeholder="ex : 8" min="0.1" step="any" required>
+                <select id="autonomieUnit" class="input-field input-addon input-select-addon" style="width:100px">
+                  <option value="heures" data-i18n="unit_hours">heures</option>
+                  <option value="minutes" data-i18n="unit_minutes">minutes</option>
+                  <option value="jours" data-i18n="unit_days">jours</option>
+                </select>
+              </div>
+              <div class="form-hint" data-i18n="form_auton_hint">Durée souhaitée sans recharge</div>
+              <div id="autonomieContextHint" class="form-hint-context" style="display:none" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3 : Tension système -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-section-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            </div>
+            <div>
+              <div class="form-section-title" data-i18n="form_sec3_title">Tension du système cible</div>
+              <div class="form-section-subtitle" data-i18n="form_sec3_subtitle">Sélectionnez ou saisissez — si incertain, laissez 48V (valeur par défaut)</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" data-i18n="form_volt_label">Tension nominale</label>
+            <div id="voltageGroup" class="toggle-group" style="margin-bottom:10px">
+              <button type="button" class="toggle-btn" data-value="12">12V</button>
+              <button type="button" class="toggle-btn selected" data-value="48">48V</button>
+              <button type="button" class="toggle-btn" data-value="24">24V</button>
+              <button type="button" class="toggle-btn" data-value="96">96V</button>
+              <button type="button" class="toggle-btn" data-value="0" data-i18n="form_volt_unsure">Je ne sais pas</button>
+            </div>
+            <input type="hidden" id="tensionInput" value="48">
+            <input type="number" id="tensionCustom" class="input-field" placeholder="Ou saisir une tension personnalisée (V)…" data-i18n-placeholder="form_volt_placeholder" min="1"
+                   oninput="document.getElementById('tensionInput').value=this.value;document.querySelectorAll('#voltageGroup .toggle-btn').forEach(b=>b.classList.remove('selected'))">
+          </div>
+        </div>
+
+        <!-- Section 4 : Contraintes physiques -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-section-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><path d="M6.5 8a2 2 0 00-1.905 1.46L2.1 18.5A2 2 0 004 21h16a2 2 0 001.925-2.54L19.4 9.5A2 2 0 0017.48 8z"/></svg>
+            </div>
+            <div>
+              <div class="form-section-title" data-i18n="form_sec4_title">Contraintes physiques et d'environnement</div>
+              <div class="form-section-subtitle" data-i18n="form_sec4_subtitle">Influence la chimie recommandée et le classement</div>
+            </div>
+          </div>
+
+          <div class="form-grid form-grid-2" style="margin-bottom:1.25rem">
+            <div class="form-group">
+              <label class="form-label" data-i18n="form_constraint_label">Contrainte de poids / encombrement</label>
+              <div id="contrainteGroup" class="radio-group" style="flex-direction:column;gap:8px">
+                <div class="radio-card selected" data-value="fixe">
+                  <div class="radio-dot"></div>
+                  <div>
+                    <div class="radio-label" style="font-weight:600" data-i18n="form_constraint_fixe">Usage fixe</div>
+                    <div style="font-size:.75rem;color:var(--text-muted)" data-i18n="form_constraint_fixe_sub">Poids peu important</div>
+                  </div>
+                </div>
+                <div class="radio-card" data-value="portable">
+                  <div class="radio-dot"></div>
+                  <div>
+                    <div class="radio-label" style="font-weight:600" data-i18n="form_constraint_portable">Portable et léger</div>
+                    <div style="font-size:.75rem;color:var(--text-muted)" data-i18n="form_constraint_portable_sub">Mobilité prioritaire → NMC</div>
+                  </div>
+                </div>
+              </div>
+              <input type="hidden" id="contrainteInput" value="fixe">
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-i18n="form_env_label">Environnement d'utilisation</label>
+              <div id="envGroup" class="radio-group" style="flex-direction:column;gap:8px">
+                <div class="radio-card selected" data-value="interieur">
+                  <div class="radio-dot"></div>
+                  <div>
+                    <div class="radio-label" style="font-weight:600" data-i18n="form_env_indoor">Intérieur</div>
+                    <div style="font-size:.75rem;color:var(--text-muted)" data-i18n="form_env_indoor_sub">Température contrôlée</div>
+                  </div>
+                </div>
+                <div class="radio-card" data-value="exterieur">
+                  <div class="radio-dot"></div>
+                  <div>
+                    <div class="radio-label" style="font-weight:600" data-i18n="form_env_outdoor">Extérieur</div>
+                    <div style="font-size:.75rem;color:var(--text-muted)" data-i18n="form_env_outdoor_sub">Variations thermiques fortes</div>
+                  </div>
+                </div>
+                <div class="radio-card" data-value="mixte">
+                  <div class="radio-dot"></div>
+                  <div>
+                    <div class="radio-label" style="font-weight:600" data-i18n="form_env_both">Les deux</div>
+                    <div style="font-size:.75rem;color:var(--text-muted)" data-i18n="form_env_both_sub">Usage mixte</div>
+                  </div>
+                </div>
+              </div>
+              <input type="hidden" id="envInput" value="interieur">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5 : Budget -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-section-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </div>
+            <div>
+              <div class="form-section-title" data-i18n="form_sec5_title">Budget indicatif</div>
+              <div class="form-section-subtitle" data-i18n="form_sec5_subtitle">Filtre les batteries hors budget — laissez vide pour ne pas filtrer</div>
+            </div>
+          </div>
+
+          <div class="form-group" style="max-width:360px">
+            <label class="form-label" data-i18n="form_budget_label">Budget maximum</label>
+            <div class="input-wrapper">
+              <input type="number" id="budgetVal" class="input-field with-addon" placeholder="ex : 5 000" min="0">
+              <select id="budgetCurrency" class="input-field input-addon input-select-addon" style="width:80px">
+                <option value="EUR">€ EUR</option>
+                <option value="USD">$ USD</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info note -->
+        <div class="form-section" style="background:#FFFBF8">
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:.25rem 0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8622C" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <p style="font-size:.8125rem;color:var(--text-muted);line-height:1.6" data-i18n="form_info_note">
+              Tous les calculs incluent une marge de sécurité de 25% sur l'énergie. Les batteries seconde vie sont comptabilisées à 80% de leur capacité nominale pour tenir compte de la dégradation.
+            </p>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="form-footer">
+          <div class="form-footer-note">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span data-i18n="form_local_note">Calcul 100% local, aucune donnée transmise</span>
+          </div>
+          <button type="submit" id="submitBtn" class="btn-submit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span data-i18n="form_btn_submit">Calculer ma recommandation</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     STEP 2 — DIMENSIONNEMENT + STEP 3 — RÉSULTATS
+══════════════════════════════════════════════════ -->
+<div id="step2" class="hidden">
+  <div class="results-wrapper">
+
+    <!-- Sizing card (populated by JS) -->
+    <div id="sizingCard"></div>
+
+    <!-- Warning -->
+    <div class="warning-banner">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <p><strong style="color:#1a2535" data-i18n="warning_title">Estimation indicative</strong> — <span data-i18n="warning_desc">Ces résultats sont générés automatiquement à des fins d'orientation. Ils doivent être validés par un ingénieur avant toute réalisation. Les prix et disponibilités sont indicatifs.</span></p>
+    </div>
+
+    <!-- Results list -->
+    <div class="results-header" style="flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:12px">
+        <h2 class="results-title" data-i18n="results_title">Batteries recommandées</h2>
+        <span class="results-count" id="resultsCount">—</span>
+      </div>
+      <div class="currency-selector" title="Taux indicatifs — juillet 2025">
+        <button class="currency-btn" data-currency="EUR" onclick="setCurrency('EUR')">€ EUR</button>
+        <button class="currency-btn" data-currency="USD" onclick="setCurrency('USD')">$ USD</button>
+        <button class="currency-btn" data-currency="MAD" onclick="setCurrency('MAD')">DH MAD</button>
+      </div>
+    </div>
+
+    <div id="resultsList"></div>
+
+    <!-- Restart + PDF export row -->
+    <div class="restart-bar" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
+      <button id="restartBtn" class="btn btn-outline" style="color:#1a2535;border-color:#E2E8F0;background:#fff">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+        <span data-i18n="btn_restart">Recommencer avec d'autres paramètres</span>
+      </button>
+      <button id="downloadPdfBtn" onclick="generatePDF()" class="btn btn-primary" style="gap:8px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span data-i18n="btn_download_pdf">Télécharger le rapport</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase Auth Modal (shared) -->
+<div id="loginModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200"
+     onclick="if(event.target===this)this.classList.add('hidden')">
+  <div style="background:#1a2535;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2.5rem;width:100%;max-width:400px;position:relative">
+    <button onclick="document.getElementById('loginModal').classList.add('hidden')"
+            style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;padding:.25rem" aria-label="Fermer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <!-- Tab switcher -->
+    <div style="display:flex;gap:4px;background:rgba(255,255,255,0.06);border-radius:10px;padding:4px;margin-bottom:1.75rem">
+      <button id="tabLogin"  onclick="switchAuthTab('login')"  class="auth-tab auth-tab-active">Connexion</button>
+      <button id="tabSignup" onclick="switchAuthTab('signup')" class="auth-tab">Créer un compte</button>
+    </div>
+    <div style="margin-bottom:1rem">
+      <label style="font-size:.8125rem;font-weight:600;color:rgba(255,255,255,0.7);display:block;margin-bottom:6px">Email</label>
+      <input id="authEmail" type="email" placeholder="vous@exemple.com" autocomplete="email"
+             style="width:100%;padding:10px 14px;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;background:rgba(255,255,255,0.05);color:#fff;font-size:.875rem;outline:none;box-sizing:border-box">
+    </div>
+    <div style="margin-bottom:1.5rem">
+      <label style="font-size:.8125rem;font-weight:600;color:rgba(255,255,255,0.7);display:block;margin-bottom:6px" data-i18n="modal_label_pass">Mot de passe</label>
+      <input id="authPassword" type="password" placeholder="Min. 6 caractères" autocomplete="current-password"
+             style="width:100%;padding:10px 14px;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;background:rgba(255,255,255,0.05);color:#fff;font-size:.875rem;outline:none;box-sizing:border-box">
+    </div>
+    <div id="authError" style="display:none;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:10px 14px;font-size:.8125rem;color:#F87171;margin-bottom:1rem"></div>
+    <button id="authSubmitBtn" onclick="vmAuthSubmit('login')" class="btn btn-primary" style="width:100%;justify-content:center;padding:12px" data-i18n="modal_btn_submit">Se connecter</button>
+    <p style="text-align:center;font-size:.8125rem;color:rgba(255,255,255,0.4);margin-top:1.25rem">
+      <span data-i18n="modal_no_account">Pas de compte ?</span>
+      <a href="#" onclick="event.preventDefault();switchAuthTab('signup')" style="color:var(--accent)" data-i18n="modal_link_signup">Créer un compte</a>
+    </p>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="js/translations.js"></script>
+<script src="js/currency.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/batteries.js"></script>
+<script src="js/calcul.js"></script>
+<script src="js/scoring.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
