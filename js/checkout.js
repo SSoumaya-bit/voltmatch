@@ -10,7 +10,7 @@
 // ═══════════════════════════════════════════════════
 
 // URL du backend (mettre l'URL de prod en production)
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = '/.netlify/functions';
 
 // ── Soumission du formulaire ─────────────────────────
 async function handleCheckoutSubmit(event) {
@@ -29,7 +29,7 @@ async function handleCheckoutSubmit(event) {
     const { totalAmount, currency } = computeTotal(cart);
     const items = buildItemsSummary(cart);
 
-    const res = await fetch(`${API_BASE_URL}/api/order`, {
+    const res = await fetch(`${API_BASE_URL}/order`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
