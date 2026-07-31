@@ -107,6 +107,7 @@
           <th data-i18n="db_th_weight">Poids</th>
           <th data-i18n="db_th_price">Prix indicatif</th>
           <th data-i18n="db_th_stock">Stock</th>
+          <th data-i18n="db_th_action">Fiche produit</th>
         </tr>
       </thead>
       <tbody id="batteryTableBody">
@@ -229,6 +230,12 @@ function renderTable() {
       ? `<span style="color:#f59e0b;font-weight:600;font-size:.8125rem">${b.stock} ${labelUnits}</span>`
       : `<span style="color:var(--green-valid);font-weight:600;font-size:.8125rem">${labelStockIn}</span>`;
 
+    const actionHtml = isEZ1
+      ? `<a href="recommandation.html" class="btn btn-primary btn-sm" style="padding:4px 10px;font-size:0.75rem;white-space:nowrap">${lang === 'en' ? 'Buy' : 'Acheter'}</a>`
+      : (b.purchaseUrl && b.purchaseUrl !== '#')
+        ? `<a href="${b.purchaseUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600;font-size:0.8125rem;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:3px">${lang === 'en' ? 'View' : 'Voir'} ↗</a>`
+        : `<span style="color:var(--text-muted);font-size:0.8125rem;opacity:0.5">—</span>`;
+
     return `<tr style="${rowStyle}">
       <td class="manufacturer-cell">${b.manufacturer}</td>
       <td class="model-cell" title="${b.dataNote}">${b.model}</td>
@@ -241,6 +248,7 @@ function renderTable() {
       <td>${b.weightKg} kg</td>
       <td><strong>${prix}</strong></td>
       <td>${stockHtml}</td>
+      <td>${actionHtml}</td>
     </tr>`;
   }).join('');
 

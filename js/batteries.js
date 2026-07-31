@@ -43,7 +43,7 @@ const BATTERIES = [
     price: 2295,
     currency: 'EUR',
     stock: 999,
-    purchaseUrl: 'https://www.bydbatterybox.com',
+    purchaseUrl: 'https://www.europe-solarstore.com/byd/byd-battery-box-premium-hvs/byd-battery-box-premium-hvs-5-1.html',
     dataReliability: 'verified',
     dataNote: 'Poids 91kg et prix 2295€ confirmés sur page revendeur (BYD HVS 5.1 / 1 module). Ces valeurs servent aussi d\'ancres pour l\'interpolation de la config 10.2 kWh (4 modules).'
   },
@@ -62,7 +62,7 @@ const BATTERIES = [
     price: 3194,
     currency: 'EUR',
     stock: 999,
-    purchaseUrl: 'https://www.bydbatterybox.com',
+    purchaseUrl: 'https://www.europe-solarstore.com/byd/byd-battery-box-premium-hvs/byd-battery-box-premium-hvs-7-7.html',
     dataReliability: 'verified',
     dataNote: 'Specs et prix confirmés sur fiche produit officielle du revendeur (3 modules HVS, 945x585x298mm).'
   },
@@ -83,7 +83,7 @@ const BATTERIES = [
     price: 4092,
     currency: 'EUR',
     stock: 999,
-    purchaseUrl: 'https://www.bydbatterybox.com',
+    purchaseUrl: 'https://www.europe-solarstore.com/byd/byd-battery-box-premium-hvs/byd-battery-box-premium-hvs-10-2.html',
     dataReliability: 'estimated',
     dataNote: 'Poids et prix extrapolés par interpolation entre HVS 5.1 (91kg/2295€, confirmés) et HVS 12.8 (205kg/4990€, confirmés) — pas de fiche directe pour cette config à 4 modules.'
   },
@@ -102,7 +102,7 @@ const BATTERIES = [
     price: 4990,
     currency: 'EUR',
     stock: 999,
-    purchaseUrl: 'https://www.bydbatterybox.com',
+    purchaseUrl: 'https://www.europe-solarstore.com/byd/byd-battery-box-premium-hvs/byd-battery-box-premium-hvs-12-8.html',
     dataReliability: 'verified',
     dataNote: 'Specs et prix confirmés sur fiche produit officielle du revendeur (5 modules HVS, 1411x585x298mm).'
   },
@@ -124,7 +124,7 @@ const BATTERIES = [
     price: 6497,
     currency: 'EUR',
     stock: 200,
-    purchaseUrl: '#',
+    purchaseUrl: 'https://www.solartopstore.com/products/lg-chem-resu-10-lithium-ion-storage-battery-48v',
     dataReliability: 'estimated',
     dataNote: 'CONFIRMÉS (fiche produit LG) : énergie 9.6 kWh, poids 111 kg, IP55, chimie NMC, garantie 10 ans. NON CONFIRMÉS (estimation) : tension nominale 400V (gamme HV typique de ce format, non vérifiée sur facture) et prix 6497€ (fourchette observée sur revendeurs tiers, non officiel LG).'
   },
@@ -143,7 +143,7 @@ const BATTERIES = [
     price: 8987,
     currency: 'EUR',
     stock: 999,
-    purchaseUrl: 'https://www.lgessbattery.com',
+    purchaseUrl: 'https://www.lghomebattery.com.au/resu16hprime',
     dataReliability: 'estimated',
     dataNote: 'Énergie (16kWh), poids (159kg) et IP55 confirmés sur fiche officielle LG. Tension et prix estimés par recherche complémentaire.'
   },
@@ -162,7 +162,7 @@ const BATTERIES = [
     price: 5878,
     currency: 'EUR',
     stock: 999,
-    purchaseUrl: 'https://www.lgessbattery.com',
+    purchaseUrl: 'https://www.lghomebattery.com.au/resu12',
     dataReliability: 'estimated',
     dataNote: 'Énergie utile (11.7kWh), poids (98.5kg) confirmés sur fiche officielle LG, décrite comme faisant partie de la "gamme basse tension" LG RESU — tension 51.8V. Prix estimé.'
   },
@@ -182,11 +182,11 @@ const BATTERIES = [
     weightKg: 39.7,
     dimensionsMm: { l: 442, w: 220, h: 161 },
     cycles: 6000,
-    warrantyYears: 15,
+    warrantyYears: 10,
     price: 3300,
     currency: 'USD',
     stock: 999,
-    purchaseUrl: '#',
+    purchaseUrl: 'https://en.pylontech.com.cn/products/us5000',
     dataReliability: 'estimated',
     dataNote: 'Specs techniques confirmées sur fiche officielle Pylontech (datasheet PDF) avec certifs UL/IEC/UN38.3. Prix non communiqué sur cette source, estimation d\'un revendeur tiers.'
   },
@@ -203,11 +203,11 @@ const BATTERIES = [
     weightKg: 32,
     dimensionsMm: { l: 422, w: 390, h: 132 },
     cycles: 5000,
-    warrantyYears: 15,
+    warrantyYears: 10,
     price: 1650,
     currency: 'USD',
     stock: 999,
-    purchaseUrl: '#',
+    purchaseUrl: 'https://www.civisol.fr/1342--batterie-lithium-pylontech-35-kwh-h48074.html',
     dataReliability: 'verified',
     dataNote: 'Fiche constructeur Pylontech. Entrée de gamme rack (les prix varient selon la région).'
   },
@@ -249,7 +249,7 @@ const BATTERIES = [
     price: 1332,
     currency: 'EUR',
     stock: 999,
-    purchaseUrl: 'https://www.dyness.com',
+    purchaseUrl: 'https://dyness.us/products/dyness-tower-t10',
     dataReliability: 'estimated',
     dataNote: 'Specs confirmées sur datasheet officiel Dyness (DOD 95%, IP54). Prix estimé par extrapolation €/kWh depuis le Tower T10 (prix confirmé multi-revendeurs).'
   },
@@ -270,7 +270,7 @@ const BATTERIES = [
     price: 2000,
     currency: 'EUR',
     stock: 150,
-    purchaseUrl: '#',
+    purchaseUrl: 'https://dyness.us/products/dyness-tower-t10',
     dataReliability: 'verified',
     dataNote: 'Fiche constructeur Dyness vérifiée (DOD 95%, IP54). Prix moyen EU.'
   },
@@ -289,7 +289,7 @@ const BATTERIES = [
     price: 2666,
     currency: 'EUR',
     stock: 999,
-    purchaseUrl: 'https://www.dyness.com',
+    purchaseUrl: 'https://dyness.us/products/dyness-tower-t10',
     dataReliability: 'estimated',
     dataNote: 'Specs confirmées sur datasheet officiel Dyness (DOD 95%, IP54). Prix estimé par extrapolation €/kWh depuis le Tower T10.'
   },
@@ -308,7 +308,7 @@ const BATTERIES = [
     price: 3332,
     currency: 'EUR',
     stock: 999,
-    purchaseUrl: 'https://www.dyness.com',
+    purchaseUrl: 'https://dyness.us/products/dyness-tower-t10',
     dataReliability: 'estimated',
     dataNote: 'Specs confirmées sur datasheet officiel Dyness (DOD 95%, IP54). Prix estimé par extrapolation €/kWh depuis le Tower T10.'
   },
@@ -327,7 +327,7 @@ const BATTERIES = [
     price: 3998,
     currency: 'EUR',
     stock: 999,
-    purchaseUrl: 'https://www.dyness.com',
+    purchaseUrl: 'https://dyness.us/products/dyness-tower-t10',
     dataReliability: 'estimated',
     dataNote: 'Specs confirmées sur datasheet officiel Dyness (DOD 95%, IP54). Prix estimé par extrapolation €/kWh depuis le Tower T10.'
   },
@@ -349,7 +349,7 @@ const BATTERIES = [
     price: 1599,
     currency: 'USD',
     stock: 999,
-    purchaseUrl: 'https://www.ecoflow.com',
+    purchaseUrl: 'https://www.ecoflow.com/us/delta-pro-portable-power-station',
     dataReliability: 'verified',
     dataNote: 'Prix et specs officiels EcoFlow (les prix de vente au détail varient selon le revendeur et la région).'
   },
@@ -368,7 +368,7 @@ const BATTERIES = [
     price: 2709,
     currency: 'USD',
     stock: 999,
-    purchaseUrl: 'https://www.ecoflow.com',
+    purchaseUrl: 'https://www.ecoflow.com/us/delta-pro-portable-power-station',
     dataReliability: 'verified',
     dataNote: 'Prix officiel confirmé (bundle EcoFlow US). Poids estimé en doublant le poids unitaire du DELTA Pro de base (déjà confirmé officiellement).'
   },
@@ -410,7 +410,7 @@ const BATTERIES = [
     price: 5500, // estimé — converti/extrapolé du prix de lancement AU (~9999 AUD pour 2×B500), pas un prix EUR officiel
     currency: 'EUR',
     stock: 999,
-    purchaseUrl: 'https://www.bluettipower.eu',
+    purchaseUrl: 'https://bluetti.com/product/bluetti-ep760/',
     dataReliability: 'estimated',
     dataNote: 'Énergie, poids, garantie, dimensions et tension confirmés sur fiches techniques officielles Bluetti. Cycles et prix estimés (prix converti/extrapolé depuis les tarifs de lancement australiens, non un prix officiel du marché EU).'
   },
@@ -429,7 +429,7 @@ const BATTERIES = [
     price: 6500, // estimé depuis prix de lancement AU (9999 AUD converti)
     currency: 'EUR',
     stock: 999,
-    purchaseUrl: 'https://www.bluettipower.eu',
+    purchaseUrl: 'https://bluetti.com/product/bluetti-ep760/',
     dataReliability: 'estimated',
     dataNote: 'Énergie, poids, garantie, dimensions et tension confirmés sur fiches officielles. Prix estimé par conversion du tarif de lancement australien (9999 AUD) — à confirmer sur le marché EU au moment de l\'achat.'
   },
@@ -448,7 +448,7 @@ const BATTERIES = [
     price: 9800, // estimé depuis prix de lancement AU (14998 AUD converti)
     currency: 'EUR',
     stock: 999,
-    purchaseUrl: 'https://www.bluettipower.eu',
+    purchaseUrl: 'https://bluetti.com/product/bluetti-ep760/',
     dataReliability: 'estimated',
     dataNote: 'Énergie, poids, garantie, dimensions et tension confirmés sur fiches officielles. Prix estimé par conversion du tarif de lancement australien (14998 AUD).'
   },
